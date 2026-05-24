@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    environment {
+        APP_NAME = "demo-app"
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/your-repo/demo-app.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo "Building ${APP_NAME}..."
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo "Running tests..."
+                sh 'mvn test'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo "Deploying ${APP_NAME}..."
+                sh 'echo Deployment completed'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+
+        failure {
+            echo 'Pipeline failed!'
+        }
+
+        always {
+            echo 'Cleaning workspace...'
+            cleanWs()
+        }
+    }
+}
